@@ -16,6 +16,7 @@
             if (disposing && (components != null))
             {
                 components.Dispose();
+                trayIcon.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -140,8 +141,13 @@
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "Form1";
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chiller";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.upDownHours)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownMinutes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.upDownSeconds)).EndInit();
@@ -161,6 +167,8 @@
         private System.Windows.Forms.NumericUpDown upDownMinutes;
         private System.Windows.Forms.NumericUpDown upDownSeconds;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NotifyIcon trayIcon;
+        private System.Windows.Forms.ContextMenu trayMenu;
     }
 }
 

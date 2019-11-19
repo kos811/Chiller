@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Management;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -106,6 +107,42 @@ namespace ChillerNF
                     }
                 }
             }
+        }
+
+        private void notifyIcon1_Click(object sender, EventArgs e)
+        {
+            var targetState = FormWindowState.Normal;
+            switch (this.WindowState)
+            {
+                case FormWindowState.Normal:
+                    targetState = FormWindowState.Minimized;
+                    break;
+                case FormWindowState.Minimized:
+                    targetState = FormWindowState.Normal;
+                    break;
+            }
+            this.WindowState = targetState;
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            trayMenu = new ContextMenu();
+            trayMenu.MenuItems.Add("Show", new EventHandler((object s, EventArgs ea) =>
+            {
+                this.WindowState = FormWindowState.Normal;
+                this.Activate();
+            }));
+            trayMenu.MenuItems.Add("Exit", new EventHandler((object s, EventArgs ea) => Application.Exit()));
+            trayIcon = new NotifyIcon();
+            trayIcon.Text = "MyTrayApp";
+            trayIcon.Icon = new Icon(SystemIcons.Application, 40, 40);
+
+            // Add menu to tray icon and show it.
+            //trayIcon.ContextMenu = trayMenu;
+            trayIcon.Visible = true;
+            trayIcon.DoubleClick += new EventHandler(this.notifyIcon1_Click);
+            trayIcon.Click += new EventHandler(this.notifyIcon1_Click);
+            trayIcon.ContextMenu = trayMenu;
         }
     }
 }
