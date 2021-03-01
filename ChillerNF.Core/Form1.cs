@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ChillerNF.Shared;
@@ -29,7 +31,7 @@ namespace ChillerNF.Core
         private void timer1_Tick(object sender, EventArgs e)
         {
 
-            if (Control.IsKeyLocked(Keys.Scroll))
+            if (Control.IsKeyLocked(Keys.Scroll) || Control.IsKeyLocked(Keys.CapsLock))
             {
                 SetMonitorInState(MonitorState.MonitorStateOff);
             }
@@ -89,13 +91,13 @@ namespace ChillerNF.Core
             using (var mcWin32 = new ManagementClass("Win32_OperatingSystem"))
             {
                 mcWin32.Get();
-
+        
                 // You can't shutdown without security privileges
                 mcWin32.Scope.Options.EnablePrivileges = true;
                 using (var mboShutdownParams =
                          mcWin32.GetMethodParameters("Win32Shutdown"))
                 {
-
+        
                     // Flag 1 means we want to shut down the system. Use "2" to reboot.
                     mboShutdownParams["Flags"] = "1";
                     mboShutdownParams["Reserved"] = "0";
@@ -125,23 +127,28 @@ namespace ChillerNF.Core
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            trayMenu = new ContextMenu();
-            trayMenu.MenuItems.Add("Show", new EventHandler((object s, EventArgs ea) =>
+            trayMenu = new ContextMenuStrip();
+            trayMenu.Items.Add("Show",null, new EventHandler((object s, EventArgs ea) =>
             {
                 this.WindowState = FormWindowState.Normal;
                 this.Activate();
             }));
-            trayMenu.MenuItems.Add("Exit", new EventHandler((object s, EventArgs ea) => Application.Exit()));
+            trayMenu.Items.Add("Exit",null, new EventHandler((object s, EventArgs ea) => Application.Exit()));
             trayIcon = new NotifyIcon();
             trayIcon.Text = "MyTrayApp";
             trayIcon.Icon = new Icon(SystemIcons.Application, 40, 40);
-
+        
             // Add menu to tray icon and show it.
             //trayIcon.ContextMenu = trayMenu;
             trayIcon.Visible = true;
             trayIcon.DoubleClick += new EventHandler(this.notifyIcon1_Click);
             trayIcon.Click += new EventHandler(this.notifyIcon1_Click);
-            trayIcon.ContextMenu = trayMenu;
+             trayIcon.ContextMenuStrip = trayMenu;
+        }
+
+        private void notifyIcon1_MouseClick(object sender, MouseEventArgs e)
+        {
+            
         }
     }
 }
