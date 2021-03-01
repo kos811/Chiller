@@ -1,4 +1,4 @@
-﻿namespace ChillerNF
+﻿namespace ChillerNF.Shared
 {
     public enum MonitorState
     {
